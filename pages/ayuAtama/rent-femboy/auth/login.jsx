@@ -1,7 +1,51 @@
-// new.jsx
-import React from "react";
+import { useState } from "react";
+import { useRouter } from "next/router";
 
 const SignInSection = () => {
+  const router = useRouter();
+  const baseAPIUrl = process.env.NEXT_PUBLIC_API_URL;
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    try {
+      const res = await fetch(`${baseAPIUrl}/auth/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // REQUIRED for HttpOnly cookie
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Login failed");
+      }
+
+      // notify navbar & listeners
+      window.dispatchEvent(new Event("auth-changed"));
+
+      // redirect
+      router.push("/ayuAtama/rent-femboy");
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <section>
       <div className="grid md:h-screen md:grid-cols-2">
@@ -9,26 +53,27 @@ const SignInSection = () => {
         <div className="flex flex-col items-center justify-center bg-white">
           <div className="max-w-lg px-5 py-16 text-center md:px-10 md:py-24 lg:py-32">
             <h2 className="mb-8 text-3xl font-bold md:mb-12 md:text-5xl">
-              Inpot Your Details Here!
+              Hahaha!!! You're One of Us!!!
             </h2>
 
             <form
+              onSubmit={handleSubmit}
               className="mx-auto mb-4 max-w-sm pb-4"
-              name="wf-form-password"
-              method="get"
             >
+              {error && <p className="mb-4 text-sm text-red-600">{error}</p>}
+
               <div className="relative">
                 <img
                   alt=""
                   src="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f190b7e37f878_EnvelopeSimple.svg"
-                  className="absolute bottom-0 left-[5%] right-auto top-[26%] inline-block"
+                  className="absolute bottom-0 left-[5%] top-[26%]"
                 />
                 <input
                   type="email"
                   className="mb-4 block h-9 w-full border border-black bg-[#f2f2f7] px-3 py-6 pl-14 text-sm text-[#333333]"
-                  maxLength={256}
-                  name="name"
                   placeholder="Email Address"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   required
                 />
               </div>
@@ -37,48 +82,41 @@ const SignInSection = () => {
                 <img
                   alt=""
                   src="https://assets.website-files.com/6357722e2a5f19121d37f84d/6357722e2a5f19601037f879_Lock-2.svg"
-                  className="absolute bottom-0 left-[5%] right-auto top-[26%] inline-block"
+                  className="absolute bottom-0 left-[5%] top-[26%]"
                 />
                 <input
                   type="password"
                   className="mb-4 block h-9 w-full border border-black bg-[#f2f2f7] px-3 py-6 pl-14 text-sm text-[#333333]"
-                  placeholder="Password (min 8 characters)"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   required
                 />
               </div>
 
-              {/* Checkbox
-              <label className="mb-6 flex items-center pb-12 font-medium lg:mb-1">
-                <input type="checkbox" name="checkbox" />
-                <span className="ml-4 inline-block cursor-pointer text-sm">
-                  I agree with the{" "}
-                  <a href="#" className="font-bold text-[#0b0b1f]">
-                    Terms &amp; Conditions
-                  </a>
-                </span>
-              </label> */}
-
-              {/* Button */}
-              <a
-                href="#"
-                className="flex items-center justify-center bg-[#276ef1] px-8 py-4 text-center font-semibold text-white transition [box-shadow:rgb(171,_196,_245)_-8px_8px] hover:[box-shadow:rgb(171,_196,_245)_0px_0px]"
+              <button
+                type="submit"
+                disabled={loading}
+                className="flex w-full items-center justify-center bg-[#276ef1] px-8 py-4 font-semibold text-white transition disabled:opacity-60
+                  [box-shadow:rgb(171,_196,_245)_-8px_8px]
+                  hover:[box-shadow:rgb(171,_196,_245)_0px_0px]"
               >
-                <p className="mr-6 font-bold">Grab your lil femboys~</p>
+                <span className="mr-6 font-bold">
+                  {loading ? "Logging in..." : "Grab your lil femboys~"}
+                </span>
                 <svg
                   className="h-4 w-4 flex-none"
                   fill="currentColor"
                   viewBox="0 0 20 21"
-                  xmlns="http://www.w3.org/2000/svg"
                 >
-                  <title>Arrow Right</title>
                   <polygon points="16.172 9 10.101 2.929 11.515 1.515 20 10 19.293 10.707 11.515 18.485 10.101 17.071 16.172 11 0 11 0 9" />
                 </svg>
-              </a>
+              </button>
             </form>
 
             <p className="text-sm text-[#636262]">
               Don't have an account yet?{" "}
-              <a href="#" className="text-sm font-bold text-black">
+              <a href="register" className="font-bold text-black">
                 Register now
               </a>
             </p>
@@ -88,14 +126,10 @@ const SignInSection = () => {
         {/* Right Component */}
         <div
           className="relative flex flex-col items-center justify-center bg-cover bg-center bg-no-repeat"
-          style={{
-            backgroundImage: "url('/ayuAtama/pengering.png')",
-          }}
+          style={{ backgroundImage: "url('/ayuAtama/pengering.png')" }}
         >
-          {/* Overlay */}
           <div className="absolute inset-0 bg-black/50" />
 
-          {/* Content */}
           <div className="relative max-w-lg px-5 py-16 text-white md:px-10 md:py-24 lg:py-32">
             <div className="mb-6 ml-2 flex h-14 w-14 items-center justify-center bg-[#276ef1] [box-shadow:rgb(171,_196,_245)_-8px_8px]">
               <img
@@ -104,17 +138,10 @@ const SignInSection = () => {
                 className="inline-block"
               />
             </div>
-
-            {/* <p className="mb-8 md:mb-12 lg:mb-16 text-white/90">
-              One date, endless sparks—come meet the companion who knows exactly
-              how to make you blush. And don't be afraid to show yourself off,
-              many out there want you as companions (๑˘ ³˘)♥ (⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄.
-            </p> */}
-
-            <p className="mb-8 md:mb-12 lg:mb-16 text-white/90">
+            <p className="mb-8 text-white/90">
               Missed the butterflies? Sign in and pick up where the flirting
               left off, with charming companions ready to turn every moment into
-              something unforgettable. (⁄ ⁄•⁄ω⁄•⁄ ⁄)⁄
+              something unforgettable.
             </p>
 
             <p className="font-bold">Wahyu Pratama</p>

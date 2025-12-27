@@ -2,7 +2,6 @@
   "name": "the-website",
   "version": "1.0.0",
   "private": true,
-  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -14,7 +13,10 @@
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.2.0",
     "@prisma/client": "^7.2.0",
+    "bcryptjs": "^3.0.3",
     "dotenv": "^17.2.3",
+    "formidable": "^3.5.4",
+    "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.562.0",
     "next": "^16.1.1",
     "react": "^18.2.0",

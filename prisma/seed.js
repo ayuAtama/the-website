@@ -10,19 +10,158 @@ const adapter = new PrismaBetterSqlite3({
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
-  console.log("Seeding database...");
+  console.log("🌸 Seeding MVP database (SQLite-safe, with images)...");
 
+  // --------------------------------------------------
+  // Clean tables (order matters because of relations)
+  // --------------------------------------------------
+  await prisma.booking.deleteMany();
+  await prisma.availability.deleteMany();
+  await prisma.listing.deleteMany();
+
+  await prisma.femboyProfileImage.deleteMany();
+  await prisma.renterProfileImage.deleteMany();
+
+  await prisma.femboyProfile.deleteMany();
+  await prisma.renterProfile.deleteMany();
+
+  await prisma.legalAcceptance.deleteMany();
   await prisma.user.deleteMany();
 
-  await prisma.user.createMany({
+  // --------------------------------------------------
+  // Users
+  // --------------------------------------------------
+  const femboyUser = await prisma.user.create({
+    data: {
+      email: "luna@test.com",
+      password: "hashed-password",
+      role: "FEMBOY",
+    },
+  });
+
+  const renterUser = await prisma.user.create({
+    data: {
+      email: "alex@test.com",
+      password: "hashed-password",
+      role: "RENTER",
+    },
+  });
+
+  // --------------------------------------------------
+  // Profiles
+  // --------------------------------------------------
+  const femboyProfile = await prisma.femboyProfile.create({
+    data: {
+      userId: femboyUser.id,
+      displayName: "Luna",
+      bio: "Cute, friendly companion for chill vibes 💖",
+      baseRate: 30000,
+    },
+  });
+
+  const renterProfile = await prisma.renterProfile.create({
+    data: {
+      userId: renterUser.id,
+      nickname: "Alex",
+    },
+  });
+
+  // --------------------------------------------------
+  // Profile Images (SEPARATE TABLES – SQLite safe)
+  // --------------------------------------------------
+
+  // Femboy images
+  await prisma.femboyProfileImage.createMany({
     data: [
-      { email: "femboy1@test.com", username: "luna", role: "FEMBOY" },
-      { email: "femboy2@test.com", username: "mika", role: "FEMBOY" },
-      { email: "renter1@test.com", username: "alex", role: "RENTER" },
+      {
+        profileId: femboyProfile.id,
+        url: "https://placehold.co/600x800/fda4c7/white?text=Luna+Primary",
+        isPrimary: true,
+      },
+      {
+        profileId: femboyProfile.id,
+        url: "https://placehold.co/600x800/fecddf/white?text=Luna+2",
+      },
     ],
   });
 
-  console.log("Seed completed.");
+  // Renter images
+  await prisma.renterProfileImage.createMany({
+    data: [
+      {
+        profileId: renterProfile.id,
+        url: "https://placehold.co/600x800/ffd1dc/white?text=Alex+Primary",
+        isPrimary: true,
+      },
+    ],
+  });
+
+  // --------------------------------------------------
+  // Listing
+  // --------------------------------------------------
+  const listing = await prisma.listing.create({
+    data: {
+      femboyId: femboyProfile.id,
+      isActive: true,
+    },
+  });
+
+  // --------------------------------------------------
+  // Availability
+  // --------------------------------------------------
+  await prisma.availability.createMany({
+    data: [
+      {
+        listingId: listing.id,
+        dayOfWeek: 5, // Friday
+        startTime: "18:00",
+        endTime: "22:00",
+      },
+      {
+        listingId: listing.id,
+        dayOfWeek: 6, // Saturday
+        startTime: "14:00",
+        endTime: "20:00",
+      },
+    ],
+  });
+
+  // --------------------------------------------------
+  // Legal Acceptance (required)
+  // --------------------------------------------------
+  await prisma.legalAcceptance.createMany({
+    data: [
+      {
+        userId: femboyUser.id,
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+        acceptedDisclaimer: true,
+      },
+      {
+        userId: renterUser.id,
+        acceptedTerms: true,
+        acceptedPrivacy: true,
+        acceptedDisclaimer: true,
+      },
+    ],
+  });
+
+  // --------------------------------------------------
+  // Sample Booking
+  // --------------------------------------------------
+  await prisma.booking.create({
+    data: {
+      renterId: renterUser.id,
+      femboyId: femboyUser.id,
+      date: new Date("2025-01-10T18:00:00Z"),
+      duration: 2,
+      location: "Online",
+      totalPrice: 60000,
+      status: "PENDING",
+    },
+  });
+
+  console.log("✅ Seed completed successfully.");
 }
 
 main()
