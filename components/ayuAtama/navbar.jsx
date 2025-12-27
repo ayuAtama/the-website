@@ -56,7 +56,10 @@ const Navbar = () => {
     >
       <div className="flex items-center justify-between px-4 md:px-16 lg:px-24 xl:px-32">
         {/* Brand */}
-        <Link href={baseurl} className="font-semibold text-lg">
+        <Link
+          href="https://devevent.wahyupratama.web.id"
+          className="font-semibold text-lg"
+        >
           FemRent
         </Link>
 

@@ -1,29 +1,39 @@
 import Link from "next/link";
 import AnimatedMessage from "../components/AnimatedMessage";
 import DelayCursor from "../components/DelayCursor";
+import AnimeCTAButton from "@components/ayuAtama/button";
+import FakeFemboyPopup from "@components/ayuAtama/fakePopup";
 
 export default function Index() {
   return (
     <div>
+      <FakeFemboyPopup />
+      <AnimeCTAButton />
       <h2>Selamat datang!</h2>
       <p>
         <Link href="/home">
           <button>MULAI</button>
         </Link>
         <Link href="/nbrthx">
-          <button style={{ marginLeft: '5px' }}>SVGSTEGO</button>
+          <button style={{ marginLeft: "5px" }}>SVGSTEGO</button>
         </Link>
         <Link href="/doom">
-          <button style={{ marginLeft: '5px', backgroundColor: 'red', color: 'white' }}>
+          <button
+            style={{
+              marginLeft: "5px",
+              backgroundColor: "red",
+              color: "white",
+            }}
+          >
             DOOM
           </button>
         </Link>
         <Link href="/vinrex/index.html">
-          <button style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <img
               src="/vinrex/assets/default_100_percent/100-error-offline.png"
               alt="Vinrex Icon"
-              style={{ width: '24px', height: '24px' }}
+              style={{ width: "24px", height: "24px" }}
             />
             VINREX GAME
           </button>
@@ -31,11 +41,11 @@ export default function Index() {
         <Link href="/gabut">
           <button>gabut</button>
         </Link>
-         <Link href="/snekabsurd">
-          <button style={{ marginLeft: '5px' }}>Absurd Snek Gem</button>
+        <Link href="/snekabsurd">
+          <button style={{ marginLeft: "5px" }}>Absurd Snek Gem</button>
         </Link>
         <Link href="/bola-ajaib">
-            <button>Bola ajaib</button>
+          <button>Bola ajaib</button>
         </Link>
       </p>
       <AnimatedMessage />
