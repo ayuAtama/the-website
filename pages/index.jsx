@@ -5,6 +5,15 @@ import AnimeCTAButton from "@components/ayuAtama/button";
 import FakeFemboyPopup from "@components/ayuAtama/fakePopup";
 
 export default function Index() {
+  function Visitor() {
+    return (
+      <div>
+        <a href="https://flagcounter.me/details/gt8">
+          <img src="https://flagcounter.me/gt8/" alt="Flag Counter" />
+        </a>
+      </div>
+    );
+  }
   return (
     <div>
       <FakeFemboyPopup />
@@ -38,18 +47,19 @@ export default function Index() {
             VINREX GAME
           </button>
         </Link>
-        <Link href="/gabut">
-          <button>gabut</button>
-        </Link>
         <Link href="/snekabsurd">
           <button style={{ marginLeft: "5px" }}>Absurd Snek Gem</button>
         </Link>
         <Link href="/bola-ajaib">
           <button>Bola ajaib</button>
         </Link>
+        <Link href="/gabut">
+          <button>gabut</button>
+        </Link>
       </p>
       <AnimatedMessage />
       <DelayCursor delay={0.05} />
+      <Visitor />
       <style jsx global>{`
         * {
           cursor: none !important;
