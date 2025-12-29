@@ -3,9 +3,3 @@ node_modules
 .DS_Store
 
 /generated/prisma
-
-/generated/prisma
-
-bun.lock
-pnpm-lock.yaml
-pnpm-workspace.yaml
